@@ -8,6 +8,12 @@ from threading import Thread
 import random
 
 
+msgFromClient = 'Hello UDP Server'
+
+bytesToSend = str.encode(msgFromClient)
+
+size = 128
+
 def main():
 
     cliente_num = int(random.random()*100000000000000)
@@ -31,7 +37,7 @@ def start(m, cliente_num):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     # Connect to server on local computer
-    s.sendto(("Cliente listo").encode(), (host, port))
+    s.sendto(bytesToSend, (host, port))
 
     print("Conexión con el host: ", host,
           " fue satisfactoria en el puerto: ", port)
@@ -45,8 +51,7 @@ def start(m, cliente_num):
 
     while True:
         # Message received from server
-        size = 1024
-        data, address = s.recvfrom(1024)
+        data, address = s.recvfrom(size)
         f.write(data)
         dataTotal += data
 

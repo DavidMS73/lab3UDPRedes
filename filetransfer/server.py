@@ -9,43 +9,74 @@ import hashlib
 import time
 from threading import Thread
 
+size = 128
+
 
 # Thread function
 # Socket is the socket object with which connection was made, used to send and receive messages
 def threaded(socket, address, threadNum):
 
     m = hashlib.sha256()
+
     logging.info("SERVER thread #%s: iniciando", threadNum)
     print("SERVER thread #", threadNum,
           ". El archivo que se va a abrir es: ", file)
+
     logging.info("SERVER thread #%s: el archivo abierto fue %s ",
                  threadNum, file)
-    with open(file, 'rb') as f:
 
-        # File
-        data = f.read(1024)
+    start_time = time.time()
 
-        m.update(data)
-        start_time = time.time()
-        # Send back reversed string to client
-        numBytes = socket.sendto(data, address)
+    fileHash = open(file, "rb")
+    dataHash = fileHash.read()
+    m.update(dataHash)
+    h = m.hexdigest()
+    print("Digest enviado: ", h)
+    fileHash.close()
 
-        print("Fin de envío thread #", threadNum)
+    f = open(file, "rb")
+    data = f.read(size)
+    numBytes = 0
+    while (data):
+        rta = socket.sendto(data, address)
+        if(rta):
+            numBytes += rta
+            data = f.read(size)
+    f.close()
 
-        # Send hash
-        h = m.hexdigest()
-        print("Digest enviado: ", h)
-        numBytesHash = socket.sendto(("HASHH" + h).encode(), address)
+    numBytesHash = socket.sendto(("HASHH" + h).encode(), address)
 
-        logging.info('SERVER thread #%s: bytes enviados sin hash %s',
-                     threadNum, numBytes)
+    # logging.info('SERVER thread #%s: bytes enviados sin hash %s',
+    #              threadNum, numBytes)
 
-        logging.info('SERVER thread #%s: bytes enviados en total %s',
-                     threadNum, numBytes + numBytesHash)
+    # logging.info('SERVER thread #%s: bytes enviados en total %s',
+    #              threadNum, numBytes + numBytesHash)
+
+    # with open(file, 'rb') as f:
+
+    #     # File
+    #     data = f.read()
+
+    #     m.update(data)
+    #     start_time = time.time()
+    #     # Send back reversed string to client
+    #     numBytes = socket.sendto(data, address)
+
+    #     print("Fin de envío thread #", threadNum)
+
+    #     # Send hash
+    #     h = m.hexdigest()
+    #     print("Digest enviado: ", h)
+    #     numBytesHash = socket.sendto(("HASHH" + h).encode(), address)
+
+    #     logging.info('SERVER thread #%s: bytes enviados sin hash %s',
+    #                  threadNum, numBytes)
+
+    #     logging.info('SERVER thread #%s: bytes enviados en total %s',
+    #                  threadNum, numBytes + numBytesHash)
 
     logging.info('SERVER thread #%s: tiempo del envío %s', threadNum,
                  (time.time()-start_time))
-
 
 
 def main():
@@ -74,7 +105,7 @@ def main():
                           "\n 2. 355 MB"
                           "\n 3. 200 MB \n"))
     if inputText == 1:
-        f = "./data/Redes5G.mp4"
+        f = "./data/50MB.zip"
     elif inputText == 2:
         f = "./data/Vivaldi.mp4"
     else:
@@ -92,9 +123,10 @@ def main():
     threads = []
     while True:
         # Accept connections from outside
-        data, address = serversocket.recvfrom(1024)
+        data, address = serversocket.recvfrom(size)
         # lock acquired by client
         # print_lock.acquire()
+        print('Mensaje recibido: ', data)
         print('Connected to : ', address[0], ':', address[1])
 
         t = Thread(target=threaded, args=(serversocket, address, len(threads)))
@@ -105,7 +137,8 @@ def main():
                 i.start()
             threads = []
             logging.info('SERVER: reiniciando threads')
-            
+
     serversocket.close()
+
 
 main()
