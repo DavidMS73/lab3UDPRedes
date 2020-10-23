@@ -39,7 +39,9 @@
 import socket,cv2, pickle,struct
 import pyshine as ps # pip install pyshine
 import imutils # pip install imutils
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+import struct
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 host_ip = '18.209.223.196' # Here according to your server ip write the address
 port = 9999
 #Multicast stuff
@@ -48,10 +50,18 @@ multicast_groups = ['18.209.223.196', '18.209.223.196', '18.209.223.196']
 server_address = ('', 10000)
 
 #Bind para multicast
-client_socket.connect((host_ip,port))
+#client_socket.connect((host_ip,port))
+client_socket.bind(("", port ))
+mreq = socket.inet_aton(multicast_groups[channel-1]) + socket.inet_aton(host_ip)
+group=multicast_groups[channel-1]
+mreq = struct.pack(
+            '4s4s',
+            socket.inet_aton(group),
+            socket.inet_aton(host_ip))
+client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
-group = socket.inet_aton(multicast_groups[channel-1])
-mreq = struct.pack('4sL', group, socket.INADDR_ANY)
+#group = socket.inet_aton(multicast_groups[channel-1])
+#mreq = struct.pack('4sL', group, socket.INADDR_ANY)
 #client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
 try:
