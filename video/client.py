@@ -39,7 +39,7 @@
 import socket,cv2, pickle,struct
 import pyshine as ps # pip install pyshine
 import imutils # pip install imutils
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 host_ip = '18.209.223.196' # Here according to your server ip write the address
 port = 9999
 #Multicast stuff

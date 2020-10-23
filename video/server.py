@@ -53,7 +53,7 @@ import pyshine as ps  # pip install pyshine
 import cv2
 vid = cv2.VideoCapture('./data/Redes5G.mp4')
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 #Multicast Stuff
 multicast_group = ('18.209.223.196', 10000)
