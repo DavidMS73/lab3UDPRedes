@@ -66,31 +66,30 @@ print('HOST IP:', host_ip)
 port = 9999
 socket_address = (host_ip, port)
 server_socket.bind(socket_address)
-server_socket.listen()
+#server_socket.listen()
 print("Listening at", socket_address)
 
 
-def show_client(addr, client_socket):
-    if client_socket:
+def show_client(addr, data):
+    if data:
         while (vid.isOpened()):
             try:
                 img, frame = vid.read()
                 frame = imutils.resize(frame, width=380)
                 a = pickle.dumps(frame)
                 message = struct.pack("Q", len(a)) + a
-                client_socket.sendto(message,multicast_group)
+                server_socket.sendto(message,addr)
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord("q"):
                     client_socket.close()
             except Exception as e:
-                client_socket.close()
                 print(f'VIDEO FINISHED! to client {addr}')
                 break
 
 
 
 while True:
-    client_socket, addr = server_socket.accept()
-    thread = threading.Thread(target=show_client, args=(addr, client_socket))
+    data, addr = server_socket.recvfrom(4096)
+    thread = threading.Thread(target=show_client, args=(addr, data))
     thread.start()
     print("TOTAL CLIENTS ", threading.activeCount() - 1)
