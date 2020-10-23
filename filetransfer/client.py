@@ -12,7 +12,7 @@ msgFromClient = 'Hello UDP Server'
 
 bytesToSend = str.encode(msgFromClient)
 
-size = 128
+size = 2**15
 
 def main():
 
@@ -48,17 +48,21 @@ def start(m, cliente_num):
     start_time = time.time()
     ghost = True
     f = open("prueba.txt", 'wb')
+    cont = 1
 
     while True:
         # Message received from server
         data, address = s.recvfrom(size)
         f.write(data)
+        print('receiving...', cont)
+        cont = cont + 1
         dataTotal += data
 
         if data and ghost:
             start_time = time.time()
             ghost = False
         if not data:
+            print("Fin envío")
             break
         elif (data.__contains__(b"HASHH")):
             logging.info("Found hash")

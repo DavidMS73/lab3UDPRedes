@@ -9,12 +9,12 @@ import hashlib
 import time
 from threading import Thread
 
-size = 128
+size = 2**15
 
 
 # Thread function
 # Socket is the socket object with which connection was made, used to send and receive messages
-def threaded(socket, address, threadNum):
+def threaded(socketServer, address, threadNum):
 
     m = hashlib.sha256()
 
@@ -38,13 +38,14 @@ def threaded(socket, address, threadNum):
     data = f.read(size)
     numBytes = 0
     while (data):
-        rta = socket.sendto(data, address)
+        rta = socketServer.sendto(data, address)
+        
         if(rta):
             numBytes += rta
             data = f.read(size)
     f.close()
 
-    numBytesHash = socket.sendto(("HASHH" + h).encode(), address)
+    numBytesHash = socketServer.sendto(("HASHH" + h).encode(), address)
 
     # logging.info('SERVER thread #%s: bytes enviados sin hash %s',
     #              threadNum, numBytes)
