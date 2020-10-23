@@ -51,7 +51,7 @@ import imutils
 import threading
 import pyshine as ps  # pip install pyshine
 import cv2
-vid = cv2.VideoCapture('../data/test.mp4')
+vid = cv2.VideoCapture('./data/Redes5G.mp4')
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
