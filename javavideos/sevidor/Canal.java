@@ -1,5 +1,7 @@
 package sevidor;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -24,6 +27,7 @@ public class Canal implements Runnable {
 	private String ruta;
 	private int canal;
 	private String grupo;
+	
 	public Canal(String pRuta, int pCanal, String pGrupo) {
 		this.ruta = pRuta;
 		this.canal = pCanal;
@@ -44,6 +48,7 @@ public class Canal implements Runnable {
 			VideoCapture camera = new VideoCapture(this.ruta);
 			JFrame jframe = new JFrame("Servidor canal "+this.canal);
 			jframe.setSize(640,360);
+			
 
 			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			JLabel vidpanel = new JLabel();
