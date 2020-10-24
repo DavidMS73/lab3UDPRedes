@@ -8,11 +8,13 @@ from threading import Thread
 import random
 
 
-msgFromClient = 'Hello UDP Server'
+msgFromClient = 'Hello UDP Server, I am ready'
+msgFromClient2 = 'Archivo: '
 
-bytesToSend = str.encode(msgFromClient)
+bytesToSendFirstMsg = str.encode(msgFromClient)
 
 size = 2**15
+
 
 def main():
 
@@ -29,15 +31,18 @@ def main():
 
 def start(m, cliente_num):
 
-    host = socket.gethostname()
-    #host = '18.209.223.196'
+    #host = socket.gethostname()
+    host = '18.209.223.196'
 
     # Define the port on which you want to connect
     port = 50000
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # Set a timeout so the socket does not block
+    # indefinitely when trying to receive data.
+    s.settimeout(1)
 
     # Connect to server on local computer
-    s.sendto(bytesToSend, (host, port))
+    s.sendto(bytesToSendFirstMsg, (host, port))
 
     print("Conexión con el host: ", host,
           " fue satisfactoria en el puerto: ", port)
@@ -50,43 +55,53 @@ def start(m, cliente_num):
     f = open("prueba.txt", 'wb')
     cont = 1
 
-    while True:
-        # Message received from server
-        data, address = s.recvfrom(size)
-        f.write(data)
-        print('receiving...', cont)
-        cont = cont + 1
-        dataTotal += data
+    try:
+        while True:
+            # Message received from server
+            try:
+                data, address = s.recvfrom(size)
+                f.write(data)
+                #print('receiving...', cont)
+                cont = cont + 1
+                dataTotal += data
 
-        if data and ghost:
-            start_time = time.time()
-            ghost = False
-        if not data:
-            print("Fin envío")
-            break
-        elif (data.__contains__(b"HASHH")):
-            logging.info("Found hash")
-            index = data.find(b"HASHH")
+                if data and ghost:
+                    start_time = time.time()
+                    ghost = False
+                if not data:
+                    print("Fin envío")
+                    break
+                elif (data.__contains__(b"HASHH")):
+                    logging.info("Found hash")
+                    index = data.find(b"HASHH")
 
-            index2 = dataTotal.find(b"HASHH")
+                    index2 = dataTotal.find(b"HASHH")
 
-            m.update(dataTotal[:index2])
+                    m.update(dataTotal[:index2])
 
-            realM = data[index+5:]
-            print("Hash recibido ", realM.decode())
-            print("Hash creado ", m.hexdigest())
-            if m.hexdigest() == realM.decode():
-                print("Hash correcto")
-                logging.info("CLIENT: hash correcto")
-            else:
-                print("Hash incorrecto")
-                logging.info("CLIENT: hash corrupto")
+                    realM = data[index+5:]
+                    print("Hash recibido ", realM.decode())
+                    print("Hash creado ", m.hexdigest())
+                    if m.hexdigest() == realM.decode():
+                        print("Hash correcto")
+                        logging.info("CLIENT: hash correcto")
+                        msgFromClient2 = 'correcto'
+                    else:
+                        print("Hash incorrecto")
+                        logging.info("CLIENT: hash corrupto")
+                        msgFromClient2 = 'incorrecto'
+            except socket.timeout:
+                print('Timeout')
+                break
 
-    logging.info('CLIENT: Cantidad bytes recibidos %s', len(dataTotal))
-    logging.info('CLIENT: Cantidad paquetes %s', len(dataTotal)/size)
-    logging.info('CLIENT: Tiempo del envío %s', (time.time()-start_time))
-    logging.info("---------------------------------------------")
-    s.close()
+    finally:
+        bytesToSendSecondMsg = str.encode(msgFromClient2)
+        s.sendto(bytesToSendSecondMsg, (host, port))
+        logging.info('CLIENT: Cantidad bytes recibidos %s', len(dataTotal))
+        logging.info('CLIENT: Cantidad paquetes recibidos %s', cont)
+        logging.info('CLIENT: Tiempo del envío %s', (time.time()-start_time))
+        logging.info("---------------------------------------------")
+        s.close()
 
 
 main()

@@ -102,11 +102,11 @@ def main():
     # Become a server socket
     print("Socket listening")
     inputText = int(input("\n ¿Qué archivo desea enviar?"
-                          "\n 1. 145 MB"
-                          "\n 2. 355 MB"
-                          "\n 3. 200 MB \n"))
+                          "\n 1. 145 MB - Multimedia"
+                          "\n 2. 355 MB - Multimedia"
+                          "\n 3. 200 MB - Archivo\n"))
     if inputText == 1:
-        f = "./data/50MB.zip"
+        f = "./data/Redes5G.mp4"
     elif inputText == 2:
         f = "./data/Vivaldi.mp4"
     else:
@@ -128,7 +128,8 @@ def main():
         # lock acquired by client
         # print_lock.acquire()
         print('Mensaje recibido: ', data)
-        print('Connected to : ', address[0], ':', address[1])
+        print('Connected to: ', address[0], ':', address[1])
+        logging.info('Message received from client: ' + data + '. IP: ' + address[0] + ', port: ' + address[1])
 
         t = Thread(target=threaded, args=(serversocket, address, len(threads)))
         threads.append(t)
