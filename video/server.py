@@ -8,8 +8,8 @@ addr2 = ("224.1.1.2",3001)
 buf = 512
 width = 640
 height = 480
-cap = cv.VideoCapture('./video/corto.mp4')
-cap2 = cv.VideoCapture('./video/mediano.mp4')
+cap = cv.VideoCapture('corto.mp4')
+cap2 = cv.VideoCapture('mediano.mp4')
 code = 'start'
 code = ('start' + (buf - len(code)) * 'a').encode('utf-8')
 
