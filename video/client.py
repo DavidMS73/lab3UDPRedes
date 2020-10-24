@@ -40,10 +40,10 @@ import socket,cv2, pickle,struct
 import pyshine as ps # pip install pyshine
 import imutils # pip install imutils
 import struct
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 host_ip = '18.209.223.196' # Here according to your server ip write the address
 port = 9999
+
 #Multicast stuff
 channel = int(input("Ingrese el canal a conectarse (1, 2 o 3)"))
 multicast_groups = ['18.209.223.196', '18.209.223.196', '18.209.223.196']
@@ -51,14 +51,27 @@ server_address = ('', 10000)
 
 #Bind para multicast
 #client_socket.connect((host_ip,port))
-client_socket.bind(("", port ))
-mreq = socket.inet_aton(multicast_groups[channel-1]) + socket.inet_aton(host_ip)
-group=multicast_groups[channel-1]
-mreq = struct.pack(
-            '4s4s',
-            socket.inet_aton(group),
-            socket.inet_aton(host_ip))
-client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+# client_socket.bind(("", port ))
+multicast_port  = 9999
+multicast_group = "18.209.223.196"
+interface_ip    = "10.11.1.43"
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# mreq = inet_aton(multicast_group) + inet_aton(interface_ip)
+sock.bind((multicast_group, multicast_port))
+mreq = struct.pack("4sl", socket.inet_aton(multicast_group), socket.INADDR_ANY)
+
+sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+
+# mreq = socket.inet_aton(multicast_groups[channel-1]) + socket.inet_aton(host_ip)
+# group=multicast_groups[channel-1]
+# mreq = struct.pack(
+#             '4sI',
+#             socket.inet_aton(group),
+#             socket.inet_aton(host_ip))
+# client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
 #group = socket.inet_aton(multicast_groups[channel-1])
 #mreq = struct.pack('4sL', group, socket.INADDR_ANY)
@@ -71,7 +84,7 @@ try:
         payload_size = struct.calcsize("Q")
         while True:
             while len(data) < payload_size:
-                packet = client_socket.recv(4 * 1024)  # 4K
+                packet = s.recv(4 * 1024)  # 4K
                 if not packet: break
                 data += packet
             packed_msg_size = data[:payload_size]

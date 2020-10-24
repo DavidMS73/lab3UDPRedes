@@ -51,23 +51,36 @@ import imutils
 import threading
 import pyshine as ps  # pip install pyshine
 import cv2
+import socket
+
+MCAST_GRP = '224.1.1.1'
+MCAST_PORT = 5007
+# regarding socket.IP_MULTICAST_TTL
+# ---------------------------------
+# for all packets sent, after two hops on the network the packet will not 
+# be re-sent/broadcast (see https://www.tldp.org/HOWTO/Multicast-HOWTO-6.html)
+MULTICAST_TTL = 2
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, MULTICAST_TTL)
+
 vid = cv2.VideoCapture('./data/Redes5G.mp4')
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-#Multicast Stuff
-multicast_group = ('18.209.223.196', 10000)
-ttl = struct.pack('b', 1)
-#server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
+# #Multicast Stuff
+# multicast_group = ('18.209.223.196', 10000)
+# ttl = struct.pack('b', 1)
+# #server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
 
-host_name = socket.gethostname()
-host_ip = socket.gethostbyname(host_name)
-print('HOST IP:', host_ip)
-port = 9999
-socket_address = (host_ip, port)
-server_socket.bind(socket_address)
-#server_socket.listen()
-print("Listening at", socket_address)
+# host_name = socket.gethostname()
+# host_ip = socket.gethostbyname(host_name)
+# print('HOST IP:', host_ip)
+# port = 9999
+# socket_address = (host_ip, port)
+# server_socket.bind(socket_address)
+# #server_socket.listen()
+# print("Listening at", socket_address)
 
 
 def show_client(addr, data):
@@ -78,7 +91,7 @@ def show_client(addr, data):
                 frame = imutils.resize(frame, width=380)
                 a = pickle.dumps(frame)
                 message = struct.pack("Q", len(a)) + a
-                server_socket.sendto(message,addr)
+                server_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord("q"):
                     client_socket.close()
@@ -89,7 +102,9 @@ def show_client(addr, data):
 
 
 while True:
-    data, addr = server_socket.recvfrom(4096)
+    # data, addr = server_socket.recvfrom(4096)
+    data=10
+    addr=20
     thread = threading.Thread(target=show_client, args=(addr, data))
     thread.start()
     print("TOTAL CLIENTS ", threading.activeCount() - 1)
