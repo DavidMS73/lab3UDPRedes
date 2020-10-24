@@ -1,110 +1,40 @@
-# import socket
-# import struct
-# import sys
-
-# message = 'message in multicast'
-# multicast_group = ('18.209.223.196', 40000)
-# #multicast_group = (socket.gethostname(), 40000)
-
-# # Create the datagram socket
-# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# # Set a timeout so the socket does not block indefinitely when trying
-# # to receive data.
-# sock.settimeout(20)
-
-# # Set the time-to-live for messages to 1 to they do not go past the
-# # local network segment.
-# ttl = struct.pack('b', 1)
-# sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
-
-
-# try:
-
-#     # Send data to the multicast group
-#     print('Enviando "%s"' % message)
-
-#     sent = sock.sendto(message.encode("ascii"), multicast_group)
-
-#     while True:
-#         print('Esperando respuesta')
-#         try:
-#             data, server = sock.recvfrom(16)
-#         except socket.timeout:
-#             print('timed out, no se recibieron mas respuestas')
-#             break
-#         else:
-#             print('Recibido "%s" de %s' % (data, server))
-
-# finally:
-#     print('Socket cerrado')
-#     sock.close()
-
-
-
-
-# Welcome to PyShine
-# In this video server is receiving video from clients.
-# Lets import the libraries
-import socket, cv2, pickle, struct
-import imutils
-import threading
-import pyshine as ps  # pip install pyshine
-import cv2
 import socket
+import numpy as np
+import cv2 as cv
 
-MCAST_GRP = '224.1.1.1'
-MCAST_PORT = 5007
-# regarding socket.IP_MULTICAST_TTL
-# ---------------------------------
-# for all packets sent, after two hops on the network the packet will not 
-# be re-sent/broadcast (see https://www.tldp.org/HOWTO/Multicast-HOWTO-6.html)
-MULTICAST_TTL = 2
+addr = ("224.1.1.1",3000)
+addr2 = ("224.1.1.2",3001)
+#addr = ("127.0.0.1", 65534)
+buf = 512
+width = 640
+height = 480
+cap = cv.VideoCapture('./video/corto.mp4')
+cap2 = cv.VideoCapture('./video/mediano.mp4')
+code = 'start'
+code = ('start' + (buf - len(code)) * 'a').encode('utf-8')
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, MULTICAST_TTL)
-
-vid = cv2.VideoCapture('./data/Redes5G.mp4')
-
-# server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# #Multicast Stuff
-# multicast_group = ('18.209.223.196', 10000)
-# ttl = struct.pack('b', 1)
-# #server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
-
-# host_name = socket.gethostname()
-# host_ip = socket.gethostbyname(host_name)
-# print('HOST IP:', host_ip)
-# port = 9999
-# socket_address = (host_ip, port)
-# server_socket.bind(socket_address)
-# #server_socket.listen()
-# print("Listening at", socket_address)
-
-
-def show_client(addr, data):
-    if data:
-        while (vid.isOpened()):
-            try:
-                img, frame = vid.read()
-                frame = imutils.resize(frame, width=380)
-                a = pickle.dumps(frame)
-                message = struct.pack("Q", len(a)) + a
-                server_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
-                key = cv2.waitKey(1) & 0xFF
-                if key == ord("q"):
-                    client_socket.close()
-            except Exception as e:
-                print(f'VIDEO FINISHED! to client {addr}')
-                break
-
-
-
-while True:
-    # data, addr = server_socket.recvfrom(4096)
-    data=10
-    addr=20
-    thread = threading.Thread(target=show_client, args=(addr, data))
-    thread.start()
-    print("TOTAL CLIENTS ", threading.activeCount() - 1)
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.setsockopt(socket.IPPROTO_IP,socket.IP_MULTICAST_TTL,1)
+#s.bind(addrG)
+while(cap.isOpened()):
+    print("HOLIWIS")
+    ret, frame = cap.read()
+    ret2, frame2 = cap2.read()
+    if ret:
+        s.sendto(code, addr)
+        data = frame.tostring()
+        for i in range(0, len(data), buf):
+            s.sendto(data[i:i+buf], addr)
+        # cv.imshow('send', frame)
+        # if cv.waitKey(1) & 0xFF == ord('q'):
+            # break
+    if ret2:
+        s.sendto(code, addr2)
+        data2 = frame2.tostring()
+        for i in range(0, len(data2), buf):
+            s.sendto(data2[i:i + buf], addr2)
+    else:
+        break
+    # s.close()
+    # cap.release()
+    # cv.destroyAllWindows()

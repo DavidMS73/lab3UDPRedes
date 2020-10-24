@@ -17,12 +17,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class Cliente {
-	static int port = 50005;
+	static int port = 3000;
 	static JButton b1;
 
 	public static void main(String args[]) throws Exception
 	{
-		String[] grupos = {"225.6.7.8","224.3.29.71","224.22.65.7"};
+		String[] grupos = {"224.1.1.1","224.3.29.71","224.22.65.7"};
 		while (true)
 		{
 			System.out.println("Escriba el canal al que desea conectarse(1,2,3)");
@@ -70,12 +70,14 @@ public class Cliente {
 			while (b1.getText()!= "ACABO")
 			{
 				mSocket.receive(receivePacket);
-				byte[] recv = receivePacket.getData();
-				ByteArrayInputStream bas = new ByteArrayInputStream(recv);
-				BufferedImage bi=ImageIO.read(bas);
-				ImageIcon image =  new ImageIcon(bi);
-				vidpanel.setIcon(image);
-				vidpanel.repaint();
+				System.out.println(receivePacket);
+//				byte[] recv = receivePacket.getData();
+//				ByteArrayInputStream bas = new ByteArrayInputStream(recv);
+//				
+//				BufferedImage bi=ImageIO.read(bas);
+//				ImageIcon image =  new ImageIcon(bi);
+//				vidpanel.setIcon(image);
+//				vidpanel.repaint();
 			}
 			jframe.setVisible(false);
 		}
