@@ -47,7 +47,7 @@ public class Canal implements Runnable {
 			Mat frame = new Mat();
 			VideoCapture camera = new VideoCapture(this.ruta);
 			JFrame jframe = new JFrame("Servidor canal "+this.canal);
-			jframe.setSize(640,360);
+			jframe.setSize(880,500);
 			
 
 			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

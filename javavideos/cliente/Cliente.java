@@ -17,12 +17,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class Cliente {
-	static int port = 3000;
+	static int port = 50005;
 	static JButton b1;
 
 	public static void main(String args[]) throws Exception
 	{
-		String[] grupos = {"224.1.1.1","224.3.29.71","224.22.65.7"};
+		String[] grupos = {"225.1.2.3", "225.2.3.4", "225.3.4.5"};
 		while (true)
 		{
 			System.out.println("Escriba el canal al que desea conectarse(1,2,3)");
@@ -49,7 +49,7 @@ public class Cliente {
 
 
 			JFrame jframe = new JFrame("Canal "+canal);
-			jframe.setSize(640,360);
+			jframe.setSize(880,500);
 			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			JLabel vidpanel = new JLabel();
 			jframe.getContentPane().add(vidpanel);
@@ -70,14 +70,13 @@ public class Cliente {
 			while (b1.getText()!= "ACABO")
 			{
 				mSocket.receive(receivePacket);
-				System.out.println(receivePacket);
-//				byte[] recv = receivePacket.getData();
-//				ByteArrayInputStream bas = new ByteArrayInputStream(recv);
-//				
-//				BufferedImage bi=ImageIO.read(bas);
-//				ImageIcon image =  new ImageIcon(bi);
-//				vidpanel.setIcon(image);
-//				vidpanel.repaint();
+				byte[] recv = receivePacket.getData();
+				ByteArrayInputStream bas = new ByteArrayInputStream(recv);
+				
+				BufferedImage bi=ImageIO.read(bas);
+				ImageIcon image =  new ImageIcon(bi);
+				vidpanel.setIcon(image);
+				vidpanel.repaint();
 			}
 			jframe.setVisible(false);
 		}

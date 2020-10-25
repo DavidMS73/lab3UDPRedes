@@ -5,7 +5,7 @@ import java.net.Socket;
 public class Servidor {
     private static final String RUTA = "data/";
     public Servidor() {
-        String[] grupos = {"225.6.7.8","224.3.29.71","224.22.65.7"};
+        String[] grupos = {"225.1.2.3", "225.2.3.4", "225.3.4.5"};
         try {
             for(int i=0;i<3;i++) { // inicializacion de un nuevo canal en el socket
                 new Thread(new Canal(RUTA+(i+1)+".mp4",i+1,grupos[i])).start();

@@ -32,8 +32,8 @@ def main():
 def start(m, cliente_num):
     msgFromClient2 = 'Archivo: '
 
-    host = socket.gethostname()
-    #host = '18.209.223.196'
+    #host = socket.gethostname()
+    host = '18.209.223.196'
 
     # Define the port on which you want to connect
     port = 50000
