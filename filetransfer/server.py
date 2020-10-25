@@ -39,7 +39,7 @@ def threaded(socketServer, address, threadNum):
     numBytes = 0
     while (data):
         rta = socketServer.sendto(data, address)
-        
+
         if(rta):
             numBytes += rta
             data = f.read(size)
@@ -78,6 +78,10 @@ def threaded(socketServer, address, threadNum):
 
     logging.info('SERVER thread #%s: tiempo del envío %s', threadNum,
                  (time.time()-start_time))
+
+    data, address = s.recvfrom(size)
+    logging.info("SERVER thread #%s. Cliente: ", data)
+    print("SERVER thread #", threadNum, ". Cliente: ", data)
 
 
 def main():
@@ -129,7 +133,8 @@ def main():
         # print_lock.acquire()
         print('Mensaje recibido: ', data)
         print('Connected to: ', address[0], ':', address[1])
-        logging.info('Message received from client: ' + data + '. IP: ' + address[0] + ', port: ' + address[1])
+        logging.info('Message received from client: ' + data +
+                     '. IP: ' + address[0] + ', port: ' + address[1])
 
         t = Thread(target=threaded, args=(serversocket, address, len(threads)))
         threads.append(t)
