@@ -79,7 +79,7 @@ def threaded(socketServer, address, threadNum):
     logging.info('SERVER thread #%s: tiempo del envío %s', threadNum,
                  (time.time()-start_time))
 
-    data, address = s.recvfrom(size)
+    data, address = socketServer.recvfrom(size)
     logging.info("SERVER thread #%s. Cliente: ", data)
     print("SERVER thread #", threadNum, ". Cliente: ", data)
 
