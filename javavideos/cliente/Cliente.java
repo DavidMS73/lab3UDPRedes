@@ -25,7 +25,11 @@ public class Cliente {
 		String[] grupos = {"225.1.2.3", "225.2.3.4", "225.3.4.5"};
 		while (true)
 		{
-			System.out.println("Escriba el canal al que desea conectarse(1,2,3)");
+			System.out.println("Escriba el canal al que desea conectarse donde:");
+			System.out.println("1 -> 225.1.2.3 - 50005");
+			System.out.println("2 -> 225.2.3.4 - 50005");
+			System.out.println("3 -> 225.3.4.5 - 50005");
+
 			Scanner lectorConsola = new Scanner(System.in);
 			int canal = lectorConsola.nextInt(); 
 
@@ -36,50 +40,39 @@ public class Cliente {
 			mSocket.setReuseAddress(true);
 			mSocket.joinGroup(group);
 
-			//	        DatagramSocket serverSocket = new DatagramSocket(port);
+			System.out.println("Conexión exitosa");
 
-			/**
-			 * Formula for lag = (byte_size/sample_rate)*2
-			 * Byte size 9728 will produce ~ 0.45 seconds of lag. Voice slightly broken.
-			 * Byte size 1400 will produce ~ 0.06 seconds of lag. Voice extremely broken.
-			 * Byte size 4000 will produce ~ 0.18 seconds of lag. Voice slightly more broken then 9728.
-			 */
-
-			System.out.println("Conectado");
-
-
-			JFrame jframe = new JFrame("Canal "+canal);
+			JFrame jframe = new JFrame("Conexión al canal "+ canal);
 			jframe.setSize(880,500);
 			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			JLabel vidpanel = new JLabel();
-			jframe.getContentPane().add(vidpanel);
+			JLabel videoLabel = new JLabel();
+			jframe.getContentPane().add(videoLabel);
 			jframe.setVisible(true);
 
 			byte[] receiveData = new byte[65500];
 
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			b1 = new JButton("Stop");
-			b1.addActionListener(new ActionListener()
-		    {
-		      public void actionPerformed(ActionEvent e)
-		      {
-		        b1.setText("ACABO");
-		      }
-		    });
+			b1.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e)
+				{
+					b1.setText("Terminado");
+				}
+			});
+
 			jframe.getContentPane().add(b1, BorderLayout.SOUTH);
-			while (b1.getText()!= "ACABO")
-			{
+			while (b1.getText()!= "Terminado"){
 				mSocket.receive(receivePacket);
 				byte[] recv = receivePacket.getData();
-				ByteArrayInputStream bas = new ByteArrayInputStream(recv);
-				
-				BufferedImage bi=ImageIO.read(bas);
-				ImageIcon image =  new ImageIcon(bi);
-				vidpanel.setIcon(image);
-				vidpanel.repaint();
+				ByteArrayInputStream byteArray = new ByteArrayInputStream(recv);
+
+				BufferedImage bufferedImg = ImageIO.read(byteArray);
+				ImageIcon image =  new ImageIcon(bufferedImg);
+				videoLabel.setIcon(image);
+				videoLabel.repaint();
 			}
 			jframe.setVisible(false);
 		}
-		
+
 	}
 }

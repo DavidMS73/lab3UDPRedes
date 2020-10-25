@@ -1,7 +1,5 @@
-package sevidor;
+package servidor;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -27,7 +24,7 @@ public class Canal implements Runnable {
 	private String ruta;
 	private int canal;
 	private String grupo;
-	
+
 	public Canal(String pRuta, int pCanal, String pGrupo) {
 		this.ruta = pRuta;
 		this.canal = pCanal;
@@ -39,72 +36,71 @@ public class Canal implements Runnable {
 			System.setProperty("java.net.preferIPv4Stack", "true");
 
 			DatagramPacket dgp;
-			InetAddress addr;
-			int port = 50005;
-			System.out.println("Canal "+canal+" iniciado");
-			/* OPEN CV STUFF*/
+			InetAddress address;
+			int puerto = 50005;
+			System.out.println("Inicio del canal " + canal);
+
+
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			Mat frame = new Mat();
-			VideoCapture camera = new VideoCapture(this.ruta);
-			JFrame jframe = new JFrame("Servidor canal "+this.canal);
+			VideoCapture videoCap = new VideoCapture(this.ruta);
+			JFrame jframe = new JFrame("SERVER: canal "+ this.canal);
 			jframe.setSize(880,500);
-			
+
 
 			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			JLabel vidpanel = new JLabel();
-			jframe.setContentPane(vidpanel);
+			JLabel videoLabel = new JLabel();
+			jframe.setContentPane(videoLabel);
 			jframe.setVisible(true);
 
 
-			byte[] data = new byte[65500]; //4K
+			byte[] data = new byte[65500];
 
-			addr = InetAddress.getByName(this.grupo);
+			address = InetAddress.getByName(this.grupo);
 			MulticastSocket socket = new MulticastSocket();
 
-			final DatagramPacket packet = new DatagramPacket(data, data.length);
-			long biggest = 0;
 			while (true) {
-				if (camera.read(frame)) {
+				if (videoCap.read(frame)) {
 					MatOfByte mob=new MatOfByte();
 					Imgcodecs.imencode(".jpg", frame, mob);
-					byte ba[]=mob.toArray();
-					ByteArrayInputStream bas = new ByteArrayInputStream(ba);
-					// Read the next chunk of data from the TargetDataLine.
-					bas.read(data, 0, data.length);
-					ByteArrayInputStream zz = new ByteArrayInputStream(data);
+					byte bytes[]=mob.toArray();
+					ByteArrayInputStream byteA = new ByteArrayInputStream(bytes);
 
-					BufferedImage bi=ImageIO.read(zz);
-					ImageIcon image =  new ImageIcon(bi);
-					vidpanel.setIcon(image);
-					vidpanel.repaint();
 
-					// Save this chunk of data.
-					dgp = new DatagramPacket (data,data.length,addr,port);
+					byteA.read(data, 0, data.length);
+					ByteArrayInputStream byteArray2 = new ByteArrayInputStream(data);
+
+					BufferedImage bufferedImg = ImageIO.read(byteArray2);
+					ImageIcon image =  new ImageIcon(bufferedImg);
+					videoLabel.setIcon(image);
+					videoLabel.repaint();
+
+
+					dgp = new DatagramPacket (data,data.length, address, puerto);
 					socket.send(dgp);
 				}
 				else {
-					camera = new VideoCapture(this.ruta);
+					videoCap = new VideoCapture(this.ruta);
 				}
 			}
 		}
+
 		catch (UnknownHostException e) {
 			System.out.println(e);
-			// TODO: handle exception
 		} catch (SocketException e1) {
 			System.out.println(e1);
-			// TODO: handle exception
 		} catch (IOException e2) {
 			System.out.println(e2);
-			// TODO: handle exception
 		}
 	}
-	static BufferedImage Mat2BufferedImage(Mat matrix)throws Exception {        
-		MatOfByte mob=new MatOfByte();
-		Imgcodecs.imencode(".jpg", matrix, mob);
-		byte ba[]=mob.toArray();
 
-		BufferedImage bi=ImageIO.read(new ByteArrayInputStream(ba));
-		return bi;
+	static BufferedImage Mat2BufferedImage(Mat matrix)throws Exception {        
+		MatOfByte mob = new MatOfByte();
+		Imgcodecs.imencode(".jpg", matrix, mob);
+		byte bytes[] = mob.toArray();
+
+		BufferedImage bufferedImg = ImageIO.read(new ByteArrayInputStream(bytes));
+		return bufferedImg;
 	}
 
 }
