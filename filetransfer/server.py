@@ -138,7 +138,7 @@ def main():
         # lock acquired by client
         # print_lock.acquire()
         print('Mensaje recibido: ', data)
-        if data !=b'Thanks, UDP Server. I finished':
+        if data.decode() != 'Thanks, UDP Server. I finished':
             print('Connected to: ', address[0], ':', address[1])
             logging.info('Message received from client: ' + str(data) +
                         '. IP: ' + str(address[0]) + ', port: ' + str(address[1]))
