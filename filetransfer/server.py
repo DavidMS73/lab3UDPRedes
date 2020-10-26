@@ -138,19 +138,18 @@ def main():
         # lock acquired by client
         # print_lock.acquire()
         print('Mensaje recibido: ', data)
-        if data.decode() != 'Thanks, UDP Server. I finished':
-            print('Connected to: ', address[0], ':', address[1])
-            logging.info('Message received from client: ' + str(data) +
-                        '. IP: ' + str(address[0]) + ', port: ' + str(address[1]))
+        print('Connected to: ', address[0], ':', address[1])
+        logging.info('Message received from client: ' + str(data) +
+                    '. IP: ' + str(address[0]) + ', port: ' + str(address[1]))
 
-            t = Thread(target=threaded, args=(serversocket, address, len(threads)))
-            threads.append(t)
+        t = Thread(target=threaded, args=(serversocket, address, len(threads)))
+        threads.append(t)
 
-            if len(threads) == num_conn:
-                for i in threads:
-                    i.start()
-                threads = []
-                logging.info('SERVER: reiniciando threads')
+        if len(threads) == num_conn:
+            for i in threads:
+                i.start()
+            threads = []
+            logging.info('SERVER: reiniciando threads')
 
     serversocket.close()
 
