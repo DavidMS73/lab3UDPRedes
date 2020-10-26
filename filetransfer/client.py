@@ -97,6 +97,7 @@ def start(m, cliente_num):
                         logging.info("CLIENT: hash corrupto")
                         msgFromClient2 += 'incorrecto'
                     s.sendto(bytesToSendLastMsg, (host, port))
+                    break
             except socket.timeout:
                 print('Timeout')
                 msgFromClient2 = 'incorrecto'
