@@ -1,0 +1,8 @@
+2020-10-26 11:13:54 INFO     CLIENT: client #4939220341644 ready
+2020-10-26 11:13:55 INFO     Found hash
+2020-10-26 11:13:55 INFO     CLIENT: hash corrupto
+2020-10-26 11:13:55 INFO     CLIENT: archivo -> hash incorrecto -> no exitosa
+2020-10-26 11:13:55 INFO     CLIENT: Cantidad bytes recibidos 2767643
+2020-10-26 11:13:55 INFO     CLIENT: Cantidad paquetes recibidos 87
+2020-10-26 11:13:55 INFO     CLIENT: Tiempo del envío 0.44966650009155273
+2020-10-26 11:13:55 INFO     ---------------------------------------------

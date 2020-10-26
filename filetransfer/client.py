@@ -7,7 +7,7 @@ from _thread import *
 from threading import Thread
 import random
 from threading import Timer
-
+from datetime import datetime
 
 msgFromClient = 'Hello UDP Server, I am ready'
 
@@ -26,7 +26,7 @@ def main():
 
     cliente_num = int(random.random()*100000000000000)
     # Initializes the client log
-    logging.basicConfig(filename="./clientsFiles/client" + str(cliente_num) + ".log", level=logging.INFO,
+    logging.basicConfig(filename="./clientsFiles/client" + str(cliente_num) + datetime.now().strftime('_%H_%M_%S_%d_%m_%Y.log'), level=logging.INFO,
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S'
                         )
@@ -38,8 +38,8 @@ def main():
 def start(m, cliente_num):
     msgFromClient2 = 'Archivo: '
 
-    #host = socket.gethostname()
-    host = '18.209.223.196'
+    host = socket.gethostname()
+    #host = '18.209.223.196'
 
     # Define the port on which you want to connect
     port = 50000
@@ -60,8 +60,9 @@ def start(m, cliente_num):
 
     start_time = time.time()
     ghost = True
-    f = open("prueba.txt", 'wb')
+    f = open("./dataReceived/client" + str(cliente_num) + ".txt", 'wb')
     cont = 1
+    exitosa = False
 
     try:
         while True:
@@ -95,6 +96,9 @@ def start(m, cliente_num):
                         logging.info("CLIENT: hash correcto")
                         msgFromClient2 += 'correcto'
                         s.sendto(bytesToSendLastMsgc, (host, port))
+                        logging.info(
+                            'CLIENT: archivo -> hash correcto -> exitosa')
+                        exitosa = True
                     else:
                         print("Hash incorrecto")
                         logging.info("CLIENT: hash corrupto")
@@ -107,12 +111,13 @@ def start(m, cliente_num):
                 break
 
     finally:
-        #bytesToSendSecondMsg = str.encode(msgFromClient2)
-        #s.sendto(bytesToSendSecondMsg, (host, port))
+        if (exitosa == False):
+            logging.info('CLIENT: archivo -> hash incorrecto -> no exitosa')
         logging.info('CLIENT: Cantidad bytes recibidos %s', len(dataTotal))
         logging.info('CLIENT: Cantidad paquetes recibidos %s', cont)
         logging.info('CLIENT: Tiempo del envío %s', (time.time()-start_time))
         logging.info("---------------------------------------------")
+        f.close()
         s.close()
 
 

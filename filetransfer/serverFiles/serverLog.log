@@ -1,0 +1,10 @@
+2020-10-26 10:33:22 INFO     Connected to DESKTOP-RAFRA5C on port 50000
+2020-10-26 10:33:26 INFO     SERVER: el n�mero de conexiones definido es 1
+2020-10-26 11:13:54 INFO     Message received from client: b'Hello UDP Server, I am ready'. IP: 169.254.231.225, port: 50359
+2020-10-26 11:13:54 INFO     SERVER cliente 169.254.231.225:50359 iniciando
+2020-10-26 11:13:54 INFO     SERVER: reiniciando threads
+2020-10-26 11:13:54 INFO     SERVER cliente #169.254.231.225:50359 el archivo abierto fue ./data/Redes5G.mp4 
+2020-10-26 11:13:55 INFO     SERVER cliente 169.254.231.225:50359 bytes enviados sin hash 145210070
+2020-10-26 11:13:55 INFO     SERVER cliente 169.254.231.225:50359 bytes enviados en total 145210139
+2020-10-26 11:13:55 INFO     SERVER cliente 169.254.231.225:50359 tiempo del env�o 1.4932193756103516
+2020-10-26 11:13:55 INFO     Rta cliente: b'Thanks, UDP Server. I finished. HASH INCORRECT'. Cliente: 169.254.231.225, port: 50359
