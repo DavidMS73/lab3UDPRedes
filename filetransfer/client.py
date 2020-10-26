@@ -13,6 +13,10 @@ msgFromClient = 'Hello UDP Server, I am ready'
 
 bytesToSendFirstMsg = str.encode(msgFromClient)
 
+msgFromClientLast = 'Thanks, UDP Server. I finished'
+
+bytesToSendLastMsg = str.encode(msgFromClientLast)
+
 size = 2**15
 
 
@@ -92,7 +96,7 @@ def start(m, cliente_num):
                         print("Hash incorrecto")
                         logging.info("CLIENT: hash corrupto")
                         msgFromClient2 += 'incorrecto'
-
+                    s.sendto(bytesToSendLastMsg, (host, port))
             except socket.timeout:
                 print('Timeout')
                 msgFromClient2 = 'incorrecto'

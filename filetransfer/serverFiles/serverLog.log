@@ -185,3 +185,14 @@
 2020-10-25 03:42:12 INFO     SERVER: reiniciando threads
 2020-10-25 03:42:12 INFO     SERVER thread #0: el archivo abierto fue ./data/Redes5G.mp4 
 2020-10-25 03:42:13 INFO     SERVER thread #0: tiempo del envío 1.45866060256958
+2020-10-26 08:40:47 INFO     Connected to DESKTOP-V6H04OT on port 50000
+2020-10-26 08:40:56 INFO     SERVER: el número de conexiones definido es 2
+2020-10-26 08:42:30 INFO     Message received from client: b'Thanks, UDP Server. I finished'. IP: 192.168.1.100, port: 60529
+2020-10-26 08:42:56 INFO     Message received from client: b'Thanks, UDP Server. I finished'. IP: 192.168.1.100, port: 57790
+2020-10-26 08:42:56 INFO     SERVER thread #0: iniciando
+2020-10-26 08:42:56 INFO     SERVER thread #1: iniciando
+2020-10-26 08:42:56 INFO     SERVER: reiniciando threads
+2020-10-26 08:42:56 INFO     SERVER thread #0: el archivo abierto fue ./data/200MB.zip 
+2020-10-26 08:42:56 INFO     SERVER thread #1: el archivo abierto fue ./data/200MB.zip 
+2020-10-26 08:42:58 INFO     SERVER thread #0: tiempo del envío 2.6071252822875977
+2020-10-26 08:42:58 INFO     SERVER thread #1: tiempo del envío 2.7740304470062256

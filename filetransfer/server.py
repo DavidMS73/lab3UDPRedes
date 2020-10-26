@@ -47,47 +47,8 @@ def threaded(socketServer, address, threadNum):
 
     numBytesHash = socketServer.sendto(("HASHH" + h).encode(), address)
 
-    # logging.info('SERVER thread #%s: bytes enviados sin hash %s',
-    #              threadNum, numBytes)
-
-    # logging.info('SERVER thread #%s: bytes enviados en total %s',
-    #              threadNum, numBytes + numBytesHash)
-
-    # with open(file, 'rb') as f:
-
-    #     # File
-    #     data = f.read()
-
-    #     m.update(data)
-    #     start_time = time.time()
-    #     # Send back reversed string to client
-    #     numBytes = socket.sendto(data, address)
-
-    #     print("Fin de envío thread #", threadNum)
-
-    #     # Send hash
-    #     h = m.hexdigest()
-    #     print("Digest enviado: ", h)
-    #     numBytesHash = socket.sendto(("HASHH" + h).encode(), address)
-
-    #     logging.info('SERVER thread #%s: bytes enviados sin hash %s',
-    #                  threadNum, numBytes)
-
-    #     logging.info('SERVER thread #%s: bytes enviados en total %s',
-    #                  threadNum, numBytes + numBytesHash)
-
     logging.info('SERVER thread #%s: tiempo del envío %s', threadNum,
                  (time.time()-start_time))
-
-    # bandera = True
-
-    # while(True and bandera):
-    #     data, address = socketServer.recvfrom(size)
-    #     if (data):
-    #         bandera = False
-
-    # logging.info("SERVER thread #%s. Cliente: ", data)
-    # print("SERVER thread #", threadNum, ". Cliente: ", data)
 
 
 def main():
@@ -137,20 +98,20 @@ def main():
         data, address = serversocket.recvfrom(size)
         # lock acquired by client
         # print_lock.acquire()
-        print('Mensaje recibido: ', data)
-        print('Connected to: ', address[0], ':', address[1])
-        logging.info('Message received from client: ' + str(data) +
-                     '. IP: ' + str(address[0]) + ', port: ' + str(address[1]))
+        if (data != b"Thanks, UDP Server. I finished" )
+            print('Mensaje recibido: ', data)
+            print('Connected to: ', address[0], ':', address[1])
+            logging.info('Message received from client: ' + str(data) +
+                        '. IP: ' + str(address[0]) + ', port: ' + str(address[1]))
 
-        t = Thread(target=threaded, args=(serversocket, address, len(threads)))
-        threads.append(t)
+            t = Thread(target=threaded, args=(serversocket, address, len(threads)))
+            threads.append(t)
 
-        if len(threads) == num_conn:
-            for i in threads:
-                i.start()
-            threads = []
-            logging.info('SERVER: reiniciando threads')
-
+            if len(threads) == num_conn:
+                for i in threads:
+                    i.start()
+                threads = []
+                logging.info('SERVER: reiniciando threads')
     serversocket.close()
 
 
