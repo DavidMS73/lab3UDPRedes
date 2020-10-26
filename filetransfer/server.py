@@ -98,7 +98,7 @@ def main():
         data, address = serversocket.recvfrom(size)
         # lock acquired by client
         # print_lock.acquire()
-        if (data != b"Thanks, UDP Server. I finished" )
+        if data != b"Thanks, UDP Server. I finished" :
             print('Mensaje recibido: ', data)
             print('Connected to: ', address[0], ':', address[1])
             logging.info('Message received from client: ' + str(data) +

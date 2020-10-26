@@ -196,3 +196,5 @@
 2020-10-26 08:42:56 INFO     SERVER thread #1: el archivo abierto fue ./data/200MB.zip 
 2020-10-26 08:42:58 INFO     SERVER thread #0: tiempo del envío 2.6071252822875977
 2020-10-26 08:42:58 INFO     SERVER thread #1: tiempo del envío 2.7740304470062256
+2020-10-26 08:57:47 INFO     Connected to DESKTOP-V6H04OT on port 50000
+2020-10-26 08:57:53 INFO     SERVER: el número de conexiones definido es 2
